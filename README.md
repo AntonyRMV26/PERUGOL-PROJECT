@@ -60,3 +60,9 @@ docker compose cp postgres:/tmp/perugol.dump backups/perugol.dump
 Con un cliente PostgreSQL local, puedes usar `pg_dump -Fc -h 127.0.0.1 -p 55432 -U perugol -f backups/perugol.dump perugol`. El archivo incluye datos de clientes. Guárdalo fuera de Git.
 
 Las tarifas, los pagos y las deudas corresponden al Sprint 2. El cierre diario, la reprogramación, la cancelación y las ausencias corresponden al alcance planteado para el Sprint 3. La revisión de otro integrante y la demo con la administradora quedan pendientes según la Definición de Terminado propuesta.
+
+## Demo externa en Vercel
+
+Importa el repositorio como proyecto Django. Usa una base PostgreSQL dedicada a la demo que admita `btree_gist`. Configura `DATABASE_URL` y `DJANGO_SECRET_KEY` como secretos de Vercel. Django desactiva el modo de desarrollo en Vercel. Para un dominio personalizado, agrega el nombre del dominio sin esquema a `DJANGO_ALLOWED_HOSTS`.
+
+Ejecuta `manage.py migrate` y `manage.py createsuperuser` desde un entorno autorizado con `DATABASE_URL` de la demo y `DJANGO_DEBUG=0`. Después, crea cuentas de trabajador desde `/admin/` para los participantes. Usa datos ficticios en esta base.
