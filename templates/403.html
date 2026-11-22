@@ -1,0 +1,19 @@
+{% extends "reservas/documento.html" %}
+{% block titulo %}Acceso restringido · Perú Gol{% endblock %}
+{% block documento %}
+<main class="content standalone">
+  <div class="panel">
+    <h1>Acceso restringido</h1>
+    <p class="muted">Tu cuenta no tiene permiso para abrir esta página.</p>
+    <div class="d-flex gap-2">
+      <a class="btn btn-verde" href="{% url 'inicio' %}">Volver al inicio</a>
+      {% if request.user.is_authenticated %}
+      <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button class="btn btn-outline-verde" type="submit">Salir</button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+</main>
+{% endblock %}

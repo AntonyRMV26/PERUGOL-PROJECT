@@ -1,0 +1,47 @@
+{% extends "reservas/base.html" %}
+{% load static %}
+{% block titulo %}Configuración · Perú Gol{% endblock %}
+{% block contenido %}
+<header class="page-heading"><h1>Configuración</h1><p>Administra las canchas y los horarios de atención.</p></header>
+<section class="panel mb-4">
+  <h2>Horarios de atención</h2>
+  <p class="muted">El mismo horario se aplica a todas las canchas. Los cambios se usan para nuevas reservas y conservan las ya registradas.</p>
+  <form method="post" id="horarios-form">
+    {% csrf_token %}
+    <div class="schedule-head schedule-row" aria-hidden="true"><span>Día</span><span>Apertura</span><span>Cierre</span><span>Estado</span></div>
+    {% for dia, form in horarios %}
+    <div class="schedule-row" data-horario>
+      <label class="check-label">{{ form.habilitado }} <strong>{{ dia }}</strong></label>
+      {% include "reservas/includes/campo.html" with field=form.apertura %}
+      {% include "reservas/includes/campo.html" with field=form.cierre %}
+      <span data-estado class="chip {% if not form.habilitado.value %}chip-amber{% endif %}">{% if form.habilitado.value %}Habilitado{% else %}Cerrado{% endif %}</span>
+      {% if form.non_field_errors %}<div class="schedule-error">{{ form.non_field_errors }}</div>{% endif %}
+    </div>
+    {% endfor %}
+    <div class="section-actions justify-content-start"><button class="btn btn-verde" type="submit">Guardar horarios</button></div>
+  </form>
+</section>
+<section class="panel mb-4" id="canchas">
+  <h2>Canchas</h2>
+  {% for cancha, form in canchas %}
+  {% include "reservas/includes/cancha_form.html" %}
+  {% endfor %}
+  <h3 class="mt-4">Agregar cancha</h3>
+  {% include "reservas/includes/cancha_form.html" with form=nueva_cancha %}
+</section>
+<section class="panel">
+  <h2>Cambios recientes</h2>
+  {% if cambios %}
+  <ul class="audit-list">
+    {% for cambio in cambios %}
+    <li>
+      <strong>{{ cambio.elemento }}</strong>
+      <span>{% if cambio.anterior %}{{ cambio.anterior }} → {% endif %}{{ cambio.actual }}</span>
+      <small>{{ cambio.usuario.get_username }} · {{ cambio.fecha|date:"d/m/Y H:i" }}</small>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}<p class="muted mb-0">Todavía no hay cambios registrados.</p>{% endif %}
+</section>
+{% endblock %}
+{% block scripts %}<script src="{% static 'reservas/horarios.js' %}" defer></script>{% endblock %}

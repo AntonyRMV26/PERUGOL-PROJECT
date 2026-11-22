@@ -1,0 +1,52 @@
+{% extends "reservas/base.html" %}
+{% load static %}
+{% block titulo %}Nueva reserva · Perú Gol{% endblock %}
+{% block contenido %}
+<header class="page-heading">
+  <h1>Registrar nueva reserva</h1>
+  <p>Completa los datos para bloquear un horario disponible.</p>
+</header>
+<div class="row g-3 align-items-start">
+  <div class="col-lg-8">
+    <section class="panel">
+      <h2>Información de reserva</h2>
+      <form method="post" id="reserva-form" data-disponibilidad="{% url 'disponibilidad' %}">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="row g-3">
+          <div class="col-md-6">{% include "reservas/includes/campo.html" with field=form.cliente %}</div>
+          <div class="col-md-6">{% include "reservas/includes/campo.html" with field=form.telefono %}</div>
+          <div class="col-md-6">{% include "reservas/includes/campo.html" with field=form.cancha %}</div>
+          <div class="col-md-6">{% include "reservas/includes/campo.html" with field=form.canal %}</div>
+          <div class="col-md-4">{% include "reservas/includes/campo.html" with field=form.fecha %}</div>
+          <div class="col-6 col-md-4">{% include "reservas/includes/campo.html" with field=form.inicio %}</div>
+          <div class="col-6 col-md-4">{% include "reservas/includes/campo.html" with field=form.fin %}</div>
+          <div class="col-12">{% include "reservas/includes/campo.html" with field=form.tipo_uso %}</div>
+        </div>
+        <div class="section-actions">
+          <a class="btn btn-outline-verde" href="{% url 'agenda' %}">Volver a la agenda</a>
+          <button class="btn btn-verde" type="submit">Guardar reserva</button>
+        </div>
+      </form>
+    </section>
+  </div>
+  <div class="col-lg-4">
+    <aside class="panel availability">
+      <h2>Disponibilidad</h2>
+      <div aria-live="polite">
+        <span id="estado-disponibilidad" class="chip {% if form.non_field_errors %}chip-amber{% endif %}">{% if form.non_field_errors %}Revisa el horario{% else %}Por comprobar{% endif %}</span>
+        <p id="mensaje-disponibilidad" class="muted mt-3 mb-0">{% if form.non_field_errors %}{{ form.non_field_errors.0 }}{% else %}Selecciona cancha, fecha y horas para consultar disponibilidad.{% endif %}</p>
+      </div>
+      <div id="alternativas-disponibilidad" class="alternatives" {% if not alternativas %}hidden{% endif %}>
+        <h3>Horarios alternativos</h3>
+        <div id="opciones-disponibilidad" class="d-flex flex-wrap gap-2">
+          {% for inicio, fin in alternativas %}
+          <button type="button" class="btn btn-outline-verde" data-inicio="{{ inicio|time:'H:i' }}" data-fin="{{ fin|time:'H:i' }}">{{ inicio|time:"H:i" }}–{{ fin|time:"H:i" }}</button>
+          {% endfor %}
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{% static 'reservas/disponibilidad.js' %}" defer></script>{% endblock %}

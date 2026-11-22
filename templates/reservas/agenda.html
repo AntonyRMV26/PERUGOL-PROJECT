@@ -1,0 +1,86 @@
+{% extends "reservas/base.html" %}
+{% block titulo %}Agenda {{ modo }} · Perú Gol{% endblock %}
+{% block contenido %}
+<header class="page-heading heading-actions">
+  <div><h1>Agenda {{ modo }}</h1><p>Consulta horarios libres y reservas por cancha.</p></div>
+  <a class="btn btn-verde" href="{% url 'nueva_reserva' %}?fecha={{ fecha|date:'Y-m-d' }}{% if cancha %}&amp;cancha={{ cancha.pk }}{% endif %}">＋ Nueva reserva</a>
+</header>
+
+<nav class="view-tabs" aria-label="Vista de agenda">
+  <a href="{% url 'agenda' %}?fecha={{ fecha|date:'Y-m-d' }}{% if cancha %}&amp;cancha={{ cancha.pk }}{% endif %}" {% if modo == 'diaria' %}aria-current="page"{% endif %}>Diaria</a>
+  <a href="{% url 'agenda_semanal' %}?fecha={{ fecha|date:'Y-m-d' }}{% if cancha %}&amp;cancha={{ cancha.pk }}{% endif %}" {% if modo == 'semanal' %}aria-current="page"{% endif %}>Semanal</a>
+</nav>
+
+<div class="panel agenda-controls mb-3">
+  <div>
+    <strong>{% if modo == 'semanal' %}{{ lun|date:"j M" }} – {{ dom|date:"j M Y" }}{% else %}{{ fecha|date:"l, j \d\e F"|capfirst }}{% endif %}</strong>
+    {% if modo == 'diaria' %}
+    <span class="chip {% if not horario.habilitado %}chip-amber{% endif %}">
+      {% if horario.habilitado %}{{ horario.apertura|time:"H:i" }}–{{ horario.cierre|time:"H:i" }}{% else %}Cerrado{% endif %}
+    </span>
+    {% endif %}
+  </div>
+  <div class="agenda-move">
+    <a href="{{ anterior }}">‹ Anterior</a>
+    <a href="{{ actual }}">{% if modo == 'semanal' %}Semana actual{% else %}Hoy{% endif %}</a>
+    <a href="{{ siguiente }}">Siguiente ›</a>
+  </div>
+  <form class="date-filter" action="{% url ruta %}">
+    <label class="visually-hidden" for="fecha-agenda">Fecha</label>
+    <input type="date" name="fecha" id="fecha-agenda" value="{{ fecha|date:'Y-m-d' }}" required>
+    {% if canchas %}
+    <label class="visually-hidden" for="cancha-agenda">Cancha</label>
+    <select name="cancha" id="cancha-agenda" class="{% if modo == 'diaria' %}mobile-control{% endif %}">
+      {% for opcion in canchas %}
+        <option value="{{ opcion.pk }}" {% if opcion == cancha %}selected{% endif %}>{{ opcion.nombre }}</option>
+      {% endfor %}
+    </select>
+    {% endif %}
+    <button class="btn btn-outline-verde" type="submit">Ver</button>
+  </form>
+</div>
+
+{% if filas %}
+<div class="panel agenda-desktop">
+  <table class="agenda-table">
+    <thead><tr><th scope="col">Horario</th>{% for columna in columnas %}<th scope="col">{{ columna.titulo }}</th>{% endfor %}</tr></thead>
+    <tbody>
+      {% for fila in filas %}
+      <tr>
+        <th scope="row">{{ fila.inicio|time:"H:i" }}<small>{{ fila.fin|time:"H:i" }}</small></th>
+        {% for celda in fila.celdas %}
+        <td rowspan="{{ celda.filas }}">
+          {% include "reservas/includes/bloque.html" with bloque=celda.bloque url=celda.columna.url %}
+        </td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<div class="agenda-mobile">
+  {% if dias_movil %}
+  <nav class="panel day-tabs" aria-label="Día de la semana">
+    {% for dia in dias_movil %}<a href="{{ dia.url }}" {% if dia.fecha == fecha %}aria-current="date"{% endif %}>{{ dia.titulo }}</a>{% endfor %}
+  </nav>
+  {% endif %}
+  <section class="panel">
+    <h2>{% if modo == 'semanal' %}{{ fecha|date:"l"|capfirst }} · {{ cancha }}{% else %}{{ columna_movil.titulo }}{% endif %}</h2>
+    {% if columna_movil.bloques %}
+    <ul class="mobile-slots">
+      {% for bloque in columna_movil.bloques %}
+      <li>
+        <strong>{{ bloque.inicio|time:"H:i" }}–{{ bloque.fin|time:"H:i" }}</strong>
+        {% include "reservas/includes/bloque.html" with url=columna_movil.url %}
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="muted mb-0">No hay horarios disponibles para este día.</p>
+    {% endif %}
+  </section>
+</div>
+{% else %}
+<div class="panel empty"><h2>Sin horarios para mostrar</h2><p>Elige otra fecha o consulta la configuración de atención.</p></div>
+{% endif %}
+{% endblock %}

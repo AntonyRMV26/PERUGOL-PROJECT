@@ -1,0 +1,8 @@
+{% with vista=request.resolver_match.url_name %}
+<a href="{% url 'inicio' %}" {% if vista == 'inicio' %}aria-current="page"{% endif %}><span aria-hidden="true">▦</span><span>{% if movil %}Inicio{% else %}Panel principal{% endif %}</span></a>
+<a href="{% url 'agenda' %}" {% if vista == 'agenda' or vista == 'agenda_semanal' or vista == 'detalle' %}aria-current="page"{% endif %}><span aria-hidden="true">▤</span><span>Agenda</span></a>
+<a href="{% url 'nueva_reserva' %}" {% if vista == 'nueva_reserva' %}aria-current="page"{% endif %}><span aria-hidden="true">＋</span><span>{% if movil %}Nueva{% else %}Nueva reserva{% endif %}</span></a>
+{% if request.es_administrador %}
+<a href="{% url 'configuracion' %}" {% if vista == 'configuracion' or vista == 'canchas' %}aria-current="page"{% endif %}><span aria-hidden="true">⚙</span><span>{% if movil %}Ajustes{% else %}Configuración{% endif %}</span></a>
+{% endif %}
+{% endwith %}

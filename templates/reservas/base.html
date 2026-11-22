@@ -1,0 +1,37 @@
+{% extends "reservas/documento.html" %}
+{% block documento %}
+<a class="visually-hidden-focusable skip-link" href="#contenido">Ir al contenido</a>
+<div class="app-shell">
+  <aside class="sidebar">
+    <a class="brand" href="{% url 'inicio' %}"><span class="brand-mark"></span> PERÚ GOL</a>
+    <span class="brand-caption">Gestión de canchas</span>
+    <nav class="sidebar-nav" aria-label="Navegación principal">
+      {% include "reservas/includes/navegacion.html" %}
+    </nav>
+    <p class="sidebar-footer">Grupo 4 · Perú Gol</p>
+  </aside>
+
+  <div class="workspace">
+    <header class="app-header">
+      <a class="header-brand" href="{% url 'inicio' %}">PERÚ GOL <span>/</span> <span class="header-detail">Sistema interno</span></a>
+      <div class="account">
+        <span class="chip">{{ request.user.get_username }} · {% if request.es_administrador %}Administración{% else %}Trabajador{% endif %}</span>
+        <form action="{% url 'logout' %}" method="post">
+          {% csrf_token %}
+          <button class="btn btn-plain" type="submit">Salir</button>
+        </form>
+      </div>
+    </header>
+    <main id="contenido" class="content">
+      {% for message in messages %}
+        <div class="alert alert-success" role="status">{{ message }}</div>
+      {% endfor %}
+      {% block contenido %}{% endblock %}
+    </main>
+  </div>
+
+  <nav class="mobile-nav" aria-label="Navegación móvil">
+    {% include "reservas/includes/navegacion.html" with movil=True %}
+  </nav>
+</div>
+{% endblock %}

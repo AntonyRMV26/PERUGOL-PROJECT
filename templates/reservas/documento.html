@@ -1,0 +1,14 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#123f31">
+  <title>{% block titulo %}Perú Gol{% endblock %}</title>
+  <link rel="icon" href="{% static 'reservas/favicon.svg' %}" type="image/svg+xml">
+  <link rel="stylesheet" href="{% static 'reservas/vendor/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'reservas/perugol.css' %}">
+</head>
+<body>{% block documento %}{% endblock %}{% block scripts %}{% endblock %}</body>
+</html>

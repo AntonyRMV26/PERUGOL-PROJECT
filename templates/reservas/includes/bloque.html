@@ -1,0 +1,9 @@
+{% if bloque.reserva %}
+<a class="slot slot-busy" href="{% url 'detalle' bloque.reserva.pk %}">
+  <span class="slot-status">Reservado</span><span class="slot-name">{{ bloque.reserva.cliente }}</span>
+</a>
+{% elif bloque.estado == 'libre' %}
+<a class="slot slot-free" href="{{ url }}&amp;inicio={{ bloque.inicio|time:'H:i' }}&amp;fin={{ bloque.fin|time:'H:i' }}" aria-label="Horario libre de {{ bloque.inicio|time:'H:i' }} a {{ bloque.fin|time:'H:i' }}">Horario libre</a>
+{% else %}
+<span class="slot slot-closed">Cerrado</span>
+{% endif %}

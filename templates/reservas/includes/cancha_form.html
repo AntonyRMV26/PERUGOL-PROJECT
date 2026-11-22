@@ -1,0 +1,8 @@
+<form class="court-form" action="{% url 'canchas' %}" method="post">
+  {% csrf_token %}
+  {% if cancha %}<input type="hidden" name="cancha" value="{{ cancha.pk }}">{% endif %}
+  {{ form.non_field_errors }}
+  {% include "reservas/includes/campo.html" with field=form.nombre %}
+  <label class="check-label">{{ form.activa }} Habilitada</label>
+  <button class="btn btn-outline-verde" type="submit">{% if cancha %}Guardar{% else %}Agregar{% endif %}</button>
+</form>

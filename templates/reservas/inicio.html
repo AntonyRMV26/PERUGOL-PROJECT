@@ -1,0 +1,30 @@
+{% extends "reservas/base.html" %}
+{% block titulo %}Panel principal · Perú Gol{% endblock %}
+{% block contenido %}
+<header class="page-heading heading-actions">
+  <div><h1>Panel principal</h1><p>{{ hoy|date:"l, j \d\e F \d\e Y"|capfirst }}</p></div>
+  <a class="btn btn-verde" href="{% url 'nueva_reserva' %}">＋ Nueva reserva</a>
+</header>
+<div class="row g-3 mb-4">
+  <div class="col-6 col-lg-4"><div class="panel metric"><span>Canchas habilitadas</span><strong>{{ cantidad_canchas }}</strong></div></div>
+  <div class="col-6 col-lg-4"><div class="panel metric"><span>Reservas de hoy</span><strong>{{ cantidad_reservas }}</strong></div></div>
+  <div class="col-12 col-lg-4"><div class="panel metric"><span>Tiempo libre de hoy entre todas las canchas</span><strong>{{ horas_libres }}</strong></div></div>
+</div>
+<section class="panel">
+  <div class="heading-actions section-heading">
+    <h2>Próximas reservas</h2><a href="{% url 'agenda' %}">Ver agenda →</a>
+  </div>
+  {% if proximas %}
+  <ul class="reservation-list">
+    {% for reserva in proximas %}
+    <li><a href="{% url 'detalle' reserva.pk %}">
+      <span><strong>{{ reserva.cliente }}</strong><small>{{ reserva.cancha }}</small></span>
+      <span class="text-end"><strong>{{ reserva.fecha|date:"j M" }}</strong><small>{{ reserva.inicio|time:"H:i" }}–{{ reserva.fin|time:"H:i" }}</small></span>
+    </a></li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="muted mb-0">Todavía no hay próximas reservas.</p>
+  {% endif %}
+</section>
+{% endblock %}

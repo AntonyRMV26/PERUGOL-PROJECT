@@ -1,0 +1,26 @@
+{% extends "reservas/documento.html" %}
+{% block titulo %}Iniciar sesión · Perú Gol{% endblock %}
+{% block documento %}
+<main class="login-layout">
+  <section class="login-intro">
+    <div>
+      <span class="brand"><span class="brand-mark"></span> PERÚ GOL</span>
+      <p class="login-subtitle">Sistema de reservas y control de pagos</p>
+      <p class="login-description">Organiza tus canchas. Controla tus ingresos. Ahorra tiempo.</p>
+    </div>
+    <p class="login-credit">Grupo 4 · Perú Gol</p>
+  </section>
+  <section class="login-main">
+    <form class="panel login-form" method="post">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ next }}">
+      <h1>Iniciar sesión</h1>
+      <p class="muted">Acceso para administración y trabajadores.</p>
+      {{ form.non_field_errors }}
+      {% include "reservas/includes/campo.html" with field=form.username %}
+      {% include "reservas/includes/campo.html" with field=form.password %}
+      <button class="btn btn-verde w-100" type="submit">Entrar al sistema</button>
+    </form>
+  </section>
+</main>
+{% endblock %}

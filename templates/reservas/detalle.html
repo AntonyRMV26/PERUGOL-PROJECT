@@ -1,0 +1,19 @@
+{% extends "reservas/base.html" %}
+{% block titulo %}Detalle de reserva · Perú Gol{% endblock %}
+{% block contenido %}
+<header class="page-heading heading-actions">
+  <div><h1>Detalle de reserva</h1><p>{{ reserva.cancha }} · {{ reserva.fecha|date:"l, j \d\e F \d\e Y" }}</p></div>
+  <a class="btn btn-outline-verde" href="{{ agenda_url }}">← Volver a la agenda</a>
+</header>
+<section class="panel detail-panel">
+  <div class="section-heading heading-actions"><h2>{{ reserva.inicio|time:"H:i" }}–{{ reserva.fin|time:"H:i" }}</h2><span class="chip">Reservado</span></div>
+  <dl class="detail-grid">
+    <div><dt>Cliente</dt><dd>{{ reserva.cliente }}</dd></div>
+    <div><dt>Teléfono</dt><dd>{{ reserva.telefono }}</dd></div>
+    <div><dt>Tipo de uso</dt><dd>{{ reserva.tipo_uso }}</dd></div>
+    <div><dt>Canal de solicitud</dt><dd>{{ reserva.get_canal_display }}</dd></div>
+    <div><dt>Registrado por</dt><dd>{{ reserva.registrado_por.get_username }}</dd></div>
+    <div><dt>Fecha y hora de registro</dt><dd>{{ reserva.registrado_en|date:"d/m/Y H:i" }}</dd></div>
+  </dl>
+</section>
+{% endblock %}
